@@ -12,5 +12,19 @@ body {
 }
 /*Делаем границу вокруг игрового поля*/
 canvas {
+    margin-right: 200px;
     border: 1px solid white;
+}
+
+.gameInfo {
+    /*width: 250px;*/
+    /*margin-right: 100px;*/
+    color: white;
+}
+.gameInfoItem {
+    display: grid;
+    grid-template-columns: 100px 100px;
+    /*margin-inline: 50px;*/
+    margin-block: 20px;
+    color: white;
 }
