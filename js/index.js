@@ -19,3 +19,7 @@ let apple = {
     y: 320
 }
 
+/* apple appearance randomizer */
+function getRandomInt(min, max) {
+    return Math.floor(Math.random() * (max - min)) + min;
+}
