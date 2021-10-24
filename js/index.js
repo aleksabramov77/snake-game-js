@@ -9,8 +9,8 @@ const rightBtnEl = document.getElementsByClassName('right')[0]    // create vari
 const pauseBtnEl = document.getElementsByClassName('pause')[0]    // create variable for 'game' element
 
 const context = canvasEl.getContext('2d')
-canvasEl.width=400
-canvasEl.height=400
+canvasEl.width = Math.min(400, window.innerWidth)
+canvasEl.height = Math.min(400, window.innerWidth)
 const grid = canvasEl.width / 25         // size of cell in pixels
 let framesCount = 0           // speed
 const initLength = 2  // initial length of snake
@@ -131,47 +131,56 @@ function loop () {
 }
 
 // listen keydown
-document.addEventListener('keydown', e => {
-    if (e.code === 'ArrowLeft' && snake.dx === 0) {
-        snake.dx = -grid
-        snake.dy = 0
-    } else if (e.code === 'ArrowUp' && snake.dy === 0) {
-        snake.dy = -grid
-        snake.dx = 0
-    } else if (e.code === 'ArrowRight' && snake.dx === 0) {
-        snake.dx = grid
-        snake.dy = 0
-    } else if (e.code === 'ArrowDown' && snake.dy === 0) {
-        snake.dy = grid
-        snake.dx = 0
-    } else if (e.code === 'Space') {
-        isPaused = !isPaused
-    }
-})
-leftBtnEl.addEventListener('click', () => {
-        snake.dx = -grid
-        snake.dy = 0
-    })
-upBtnEl.addEventListener('click', () => {
-        snake.dy = -grid
-        snake.dx = 0
-    })
-rightBtnEl.addEventListener('click', () => {
-        snake.dx = grid
-        snake.dy = 0
-    })
-downBtnEl.addEventListener('click', () => {
-        snake.dy = grid
-        snake.dx = 0
-    })
-pauseBtnEl.addEventListener('click', () => {
-        isPaused = !isPaused
-    })
+document.addEventListener('keydown', handler)
+document.addEventListener('click', handler)
 
 
 /* Start game */
 requestAnimationFrame(loop)
 
+function handler (e) {
+    let type
+    if(e.type === 'keydown' && e.code === 'ArrowLeft' || e.type === 'click' && e.target === leftBtnEl ) {
+        type = 'goLeft'
+    } else if (e.type === 'keydown' && e.code === 'ArrowUp' || e.type === 'click' && e.target === upBtnEl ) {
+        type = 'goUp'
+    } else if (e.type === 'keydown' && e.code === 'ArrowRight' || e.type === 'click' && e.target === rightBtnEl ) {
+        type = 'goRight'
+    } else if (e.type === 'keydown' && e.code === 'ArrowDown' || e.type === 'click' && e.target === downBtnEl ) {
+        type = 'goDown'
+    } else if (e.type === 'keydown' && e.code === 'Space' || e.type === 'click' && e.target === pauseBtnEl ) {
+        type = 'pause'
+    }
+    switch (type) {
+        case 'goLeft':
+            if (snake.dx === 0) {
+                snake.dx = -grid
+                snake.dy = 0
+            }
+            break
+        case 'goUp':
+            if (snake.dy === 0) {
+                snake.dy = -grid
+                snake.dx = 0
+            }
+            break
+        case 'goRight':
+            if (snake.dx === 0) {
+                snake.dx = grid
+                snake.dy = 0
+            }
+            break
+        case 'goDown':
+            if (snake.dy === 0) {
+                snake.dy = grid
+                snake.dx = 0
+            }
+            break
+        case 'pause':
+            isPaused = !isPaused
+
+    }
+}
 
 
 
