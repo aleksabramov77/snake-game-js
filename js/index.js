@@ -1,26 +1,25 @@
 const canvasEl = document.getElementById('game')      // create variable for 'game' element
 const scoreEl = document.getElementsByClassName('currentScore')[0]    // create variable for 'game' element
 const maxScoreEl = document.getElementsByClassName('maxScore')  [0]    // create variable for 'game' element
-const pausedEl = document.getElementsByClassName('paused')[0]    // create variable for 'game' element
 const upBtnEl = document.getElementsByClassName('up')[0]    // create variable for 'game' element
 const leftBtnEl = document.getElementsByClassName('left')[0]    // create variable for 'game' element
 const downBtnEl = document.getElementsByClassName('down')[0]    // create variable for 'game' element
 const rightBtnEl = document.getElementsByClassName('right')[0]    // create variable for 'game' element
 const pauseBtnEl = document.getElementsByClassName('pause')[0]    // create variable for 'game' element
 
-
 const context = canvasEl.getContext('2d')
-const field = {x: 25, y: 25}
-field.width = Math.min((window.innerWidth - 2)/field.x)*field.x
-canvasEl.width = Math.min(400, field.width)
-canvasEl.height = Math.min(400, field.width)
-const grid = Math.floor(canvasEl.width / field.x )               // size of cell in cells
+const field = { x: 25, y: 25 }
+canvasEl.width = Math.floor((window.innerWidth - 2) / field.x) * field.x
+canvasEl.height = canvasEl.width = Math.min(400, canvasEl.width)
+// canvasEl.height = Math.min(400, canvasEl.width)
+const grid = Math.floor(canvasEl.width / field.x)               // size of cell in cells
 let framesCount = 0             // speed
 const initLength = 2            // initial length of snake
 let score = 0                   // score
 let bestScore = 0
 let isPaused = false
 let firstRender = true
+let stepIsOver = false
 
 /* snake state */
 const snake = {
@@ -53,8 +52,8 @@ function loop () {
     // game info render
     scoreEl.innerText = score
     maxScoreEl.innerText = bestScore
-    pausedEl.innerText = isPaused ? 'YES' : 'NO'
     if (!isPaused) {
+        pauseBtnEl.innerText = firstRender ? `Start` : `${isPaused ? 'Resume' : 'Pause'}`
 
         // clean the canvas
         context.clearRect(0, 0, canvasEl.width, canvasEl.height)
@@ -96,6 +95,7 @@ function loop () {
         context.fillRect(apple.x * grid + 1, apple.y * grid + 1, grid - 2, grid - 2)
 
         // draw the snake
+        stepIsOver = true
         snake.snakeCells.forEach((cell, index) => {
             context.fillStyle = ['#2DC64F', 'green'][Number(!!index)]        // highlight head with another color
             context.fillRect(cell.x * grid + 1, cell.y * grid + 1, grid - 2, grid - 2)
@@ -115,6 +115,7 @@ function loop () {
                 // if there is a cell with the same coordinates as the head - the game is over
                 if (cell.x === snake.snakeCells[i].x && cell.y === snake.snakeCells[i].y) {
                     // Set initial values
+                    pauseBtnEl.innerText = `Start`
                     score = 0
                     firstRender = true
                     snake.x = 10
@@ -137,33 +138,35 @@ function loop () {
 document.addEventListener('keydown', handler)
 document.addEventListener('click', handler)
 
-
 /* Start game */
 requestAnimationFrame(loop)
 
 function handler (e) {
-    if(e.type === 'keydown' && e.code === 'ArrowLeft' || e.type === 'click' && e.target === leftBtnEl ) {
-        if (snake.dx === 0) {
-            snake.dx = -1
-            snake.dy = 0
-        }
-    } else if (e.type === 'keydown' && e.code === 'ArrowUp' || e.type === 'click' && e.target === upBtnEl ) {
-        if (snake.dy === 0) {
-            snake.dy = -1
-            snake.dx = 0
-        }
-    } else if (e.type === 'keydown' && e.code === 'ArrowRight' || e.type === 'click' && e.target === rightBtnEl ) {
-        if (snake.dx === 0) {
-            snake.dx = 1
-            snake.dy = 0
-        }
-    } else if (e.type === 'keydown' && e.code === 'ArrowDown' || e.type === 'click' && e.target === downBtnEl ) {
-        if (snake.dy === 0) {
-            snake.dy = 1
-            snake.dx = 0
-        }
-    } else if (e.type === 'keydown' && e.code === 'Space' || e.type === 'click' && e.target === pauseBtnEl ) {
-        isPaused = !isPaused
+    if (stepIsOver) {
+        if (e.type === 'keydown' && e.code === 'ArrowLeft' || e.type === 'click' && e.target === leftBtnEl) {
+            if (snake.dx === 0) {
+                snake.dx = -1
+                snake.dy = 0
+            }
+        } else if (e.type === 'keydown' && e.code === 'ArrowUp' || e.type === 'click' && e.target === upBtnEl) {
+            if (snake.dy === 0) {
+                snake.dy = -1
+                snake.dx = 0
+            }
+        } else if (e.type === 'keydown' && e.code === 'ArrowRight' || e.type === 'click' && e.target === rightBtnEl) {
+            if (snake.dx === 0) {
+                snake.dx = 1
+                snake.dy = 0
+            }
+        } else if (e.type === 'keydown' && e.code === 'ArrowDown' || e.type === 'click' && e.target === downBtnEl) {
+            if (snake.dy === 0) {
+                snake.dy = 1
+                snake.dx = 0
+            }
+        } else if (e.type === 'keydown' && e.code === 'Space' || e.type === 'click' && e.target === pauseBtnEl) {
+            isPaused = !isPaused
+        } else return
+        stepIsOver = false
     }
 }
 
