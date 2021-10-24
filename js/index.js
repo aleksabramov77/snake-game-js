@@ -9,9 +9,9 @@ const rightBtnEl = document.getElementsByClassName('right')[0]    // create vari
 const pauseBtnEl = document.getElementsByClassName('pause')[0]    // create variable for 'game' element
 
 const context = canvasEl.getContext('2d')
-canvasEl.width = Math.min(400, window.innerWidth)
-canvasEl.height = Math.min(400, window.innerWidth)
-const grid = canvasEl.width / 25         // size of cell in pixels
+canvasEl.width = Math.min(400, window.innerWidth - 2)
+canvasEl.height = Math.min(400, window.innerWidth - 2)
+const grid = Math.floor(canvasEl.width / 25 )        // size of cell in pixels
 let framesCount = 0           // speed
 const initLength = 2  // initial length of snake
 let score = 0
@@ -21,8 +21,8 @@ let firstRender = true
 
 /* snake state */
 const snake = {
-    x: 160,             // initial coords
-    y: 160,
+    x: grid * 10,             // initial coords
+    y: grid * 10,
     dx: grid,           // initial direction of moving
     dy: 0,
     snakeCells: [],     // array of snakeCells of snake tail
@@ -31,8 +31,8 @@ const snake = {
 
 /* apple state */
 const apple = {
-    x: 320,             // initial coords
-    y: 320
+    x: grid * 20,             // initial coords
+    y: grid * 20
 }
 
 /* apple appearance randomizer */
@@ -44,7 +44,7 @@ function getRandomInt (min, max) {
 function loop () {
     // to reduce the frame rate, we will only output every fifth frame. FPS 60/5 = 12
     requestAnimationFrame(loop)
-    if (++framesCount < 5) return
+    if (++framesCount < 10) return
     framesCount = 0
 
     // game info render
@@ -114,14 +114,14 @@ function loop () {
                     // Set initial values
                     score = 0
                     firstRender = true
-                    snake.x = 160
-                    snake.y = 160
+                    snake.x = grid * 10
+                    snake.y = grid * 10
                     snake.snakeCells = []
                     snake.snakeLength = initLength
                     snake.dx = grid
                     snake.dy = 0
-                    apple.x = 320
-                    apple.y = 320
+                    apple.x = grid * 20
+                    apple.y = grid * 20
                 }
             }
         })
@@ -141,44 +141,27 @@ requestAnimationFrame(loop)
 function handler (e) {
     let type
     if(e.type === 'keydown' && e.code === 'ArrowLeft' || e.type === 'click' && e.target === leftBtnEl ) {
-        type = 'goLeft'
+        if (snake.dx === 0) {
+            snake.dx = -grid
+            snake.dy = 0
+        }
     } else if (e.type === 'keydown' && e.code === 'ArrowUp' || e.type === 'click' && e.target === upBtnEl ) {
-        type = 'goUp'
+        if (snake.dy === 0) {
+            snake.dy = -grid
+            snake.dx = 0
+        }
     } else if (e.type === 'keydown' && e.code === 'ArrowRight' || e.type === 'click' && e.target === rightBtnEl ) {
-        type = 'goRight'
+        if (snake.dx === 0) {
+            snake.dx = grid
+            snake.dy = 0
+        }
     } else if (e.type === 'keydown' && e.code === 'ArrowDown' || e.type === 'click' && e.target === downBtnEl ) {
-        type = 'goDown'
+        if (snake.dy === 0) {
+            snake.dy = grid
+            snake.dx = 0
+        }
     } else if (e.type === 'keydown' && e.code === 'Space' || e.type === 'click' && e.target === pauseBtnEl ) {
-        type = 'pause'
-    }
-    switch (type) {
-        case 'goLeft':
-            if (snake.dx === 0) {
-                snake.dx = -grid
-                snake.dy = 0
-            }
-            break
-        case 'goUp':
-            if (snake.dy === 0) {
-                snake.dy = -grid
-                snake.dx = 0
-            }
-            break
-        case 'goRight':
-            if (snake.dx === 0) {
-                snake.dx = grid
-                snake.dy = 0
-            }
-            break
-        case 'goDown':
-            if (snake.dy === 0) {
-                snake.dy = grid
-                snake.dx = 0
-            }
-            break
-        case 'pause':
-            isPaused = !isPaused
-
+        isPaused = !isPaused
     }
 }
 
