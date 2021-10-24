@@ -74,13 +74,13 @@ function loop () {
 
         // When the border is reached, the head appears from the opposite side
         if (snake.x < 0) {
-            snake.x = field.width
-        } else if (snake.x >= canvasEl.width) {
+            snake.x = field.x
+        } else if (snake.x >= field.x) {
             snake.x = 0
         }
         if (snake.y < 0) {
-            snake.y = field.height
-        } else if (snake.y >= canvasEl.height) {
+            snake.y = field.y
+        } else if (snake.y >= field.y) {
             snake.y = 0
         }
 
