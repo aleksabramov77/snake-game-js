@@ -8,31 +8,34 @@ const downBtnEl = document.getElementsByClassName('down')[0]    // create variab
 const rightBtnEl = document.getElementsByClassName('right')[0]    // create variable for 'game' element
 const pauseBtnEl = document.getElementsByClassName('pause')[0]    // create variable for 'game' element
 
+
 const context = canvasEl.getContext('2d')
-canvasEl.width = Math.min(400, window.innerWidth - 2)
-canvasEl.height = Math.min(400, window.innerWidth - 2)
-const grid = Math.floor(canvasEl.width / 25 )        // size of cell in pixels
-let framesCount = 0           // speed
-const initLength = 2  // initial length of snake
-let score = 0
+const field = {x: 25, y: 25}
+field.width = Math.min((window.innerWidth - 2)/field.x)*field.x
+canvasEl.width = Math.min(400, field.width)
+canvasEl.height = Math.min(400, field.width)
+const grid = Math.floor(canvasEl.width / field.x )               // size of cell in cells
+let framesCount = 0             // speed
+const initLength = 2            // initial length of snake
+let score = 0                   // score
 let bestScore = 0
 let isPaused = false
 let firstRender = true
 
 /* snake state */
 const snake = {
-    x: grid * 10,             // initial coords
-    y: grid * 10,
-    dx: grid,           // initial direction of moving
+    x: 10,                      // initial coords in cells
+    y: 10,
+    dx: 1,                      // initial direction of moving
     dy: 0,
-    snakeCells: [],     // array of snakeCells of snake tail
+    snakeCells: [],             // array of snakeCells of snake tail
     snakeLength: initLength,    // initial length of snake
 }
 
 /* apple state */
 const apple = {
-    x: grid * 20,             // initial coords
-    y: grid * 20
+    x: 20,                      // initial coords
+    y: 20
 }
 
 /* apple appearance randomizer */
@@ -71,12 +74,12 @@ function loop () {
 
         // When the border is reached, the head appears from the opposite side
         if (snake.x < 0) {
-            snake.x = canvasEl.width - grid
+            snake.x = field.width
         } else if (snake.x >= canvasEl.width) {
             snake.x = 0
         }
         if (snake.y < 0) {
-            snake.y = canvasEl.height - grid
+            snake.y = field.height
         } else if (snake.y >= canvasEl.height) {
             snake.y = 0
         }
@@ -90,12 +93,12 @@ function loop () {
 
         // draw an apple
         context.fillStyle = 'red'
-        context.fillRect(apple.x + 1, apple.y + 1, grid - 2, grid - 2)
+        context.fillRect(apple.x * grid + 1, apple.y * grid + 1, grid - 2, grid - 2)
 
         // draw the snake
         snake.snakeCells.forEach((cell, index) => {
             context.fillStyle = ['#2DC64F', 'green'][Number(!!index)]        // highlight head with another color
-            context.fillRect(cell.x + 1, cell.y + 1, grid - 2, grid - 2)
+            context.fillRect(cell.x * grid + 1, cell.y * grid + 1, grid - 2, grid - 2)
 
             // if the snake ate an apple
             if (cell.x === apple.x && cell.y === apple.y) {
@@ -104,8 +107,8 @@ function loop () {
                 console.log('Count: ' + score + ', record: ' + bestScore)
                 snake.snakeLength++
                 // update new apple coords
-                apple.x = getRandomInt(0, 25) * grid
-                apple.y = getRandomInt(0, 25) * grid
+                apple.x = getRandomInt(0, 25)
+                apple.y = getRandomInt(0, 25)
             }
             // checking if the snake ate itself
             for (let i = index + 1; i < snake.snakeCells.length; i++) {
@@ -114,14 +117,14 @@ function loop () {
                     // Set initial values
                     score = 0
                     firstRender = true
-                    snake.x = grid * 10
-                    snake.y = grid * 10
+                    snake.x = 10
+                    snake.y = 10
                     snake.snakeCells = []
                     snake.snakeLength = initLength
-                    snake.dx = grid
+                    snake.dx = 1
                     snake.dy = 0
-                    apple.x = grid * 20
-                    apple.y = grid * 20
+                    apple.x = 20
+                    apple.y = 20
                 }
             }
         })
@@ -139,25 +142,24 @@ document.addEventListener('click', handler)
 requestAnimationFrame(loop)
 
 function handler (e) {
-    let type
     if(e.type === 'keydown' && e.code === 'ArrowLeft' || e.type === 'click' && e.target === leftBtnEl ) {
         if (snake.dx === 0) {
-            snake.dx = -grid
+            snake.dx = -1
             snake.dy = 0
         }
     } else if (e.type === 'keydown' && e.code === 'ArrowUp' || e.type === 'click' && e.target === upBtnEl ) {
         if (snake.dy === 0) {
-            snake.dy = -grid
+            snake.dy = -1
             snake.dx = 0
         }
     } else if (e.type === 'keydown' && e.code === 'ArrowRight' || e.type === 'click' && e.target === rightBtnEl ) {
         if (snake.dx === 0) {
-            snake.dx = grid
+            snake.dx = 1
             snake.dy = 0
         }
     } else if (e.type === 'keydown' && e.code === 'ArrowDown' || e.type === 'click' && e.target === downBtnEl ) {
         if (snake.dy === 0) {
-            snake.dy = grid
+            snake.dy = 1
             snake.dx = 0
         }
     } else if (e.type === 'keydown' && e.code === 'Space' || e.type === 'click' && e.target === pauseBtnEl ) {
