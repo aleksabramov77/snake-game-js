@@ -2,8 +2,16 @@ const canvasEl = document.getElementById('game')      // create variable for 'ga
 const scoreEl = document.getElementsByClassName('currentScore')[0]    // create variable for 'game' element
 const maxScoreEl = document.getElementsByClassName('maxScore')  [0]    // create variable for 'game' element
 const pausedEl = document.getElementsByClassName('paused')[0]    // create variable for 'game' element
+const upBtnEl = document.getElementsByClassName('up')[0]    // create variable for 'game' element
+const leftBtnEl = document.getElementsByClassName('left')[0]    // create variable for 'game' element
+const downBtnEl = document.getElementsByClassName('down')[0]    // create variable for 'game' element
+const rightBtnEl = document.getElementsByClassName('right')[0]    // create variable for 'game' element
+const pauseBtnEl = document.getElementsByClassName('pause')[0]    // create variable for 'game' element
+
 const context = canvasEl.getContext('2d')
-const grid = 16         // size of cell in pixels
+canvasEl.width=400
+canvasEl.height=400
+const grid = canvasEl.width / 25         // size of cell in pixels
 let framesCount = 0           // speed
 const initLength = 2  // initial length of snake
 let score = 0
@@ -13,7 +21,7 @@ let firstRender = true
 
 /* snake state */
 const snake = {
-    x: 160,             // initial coords (in grid)
+    x: 160,             // initial coords
     y: 160,
     dx: grid,           // initial direction of moving
     dy: 0,
@@ -23,7 +31,7 @@ const snake = {
 
 /* apple state */
 const apple = {
-    x: 320,             // initial coords (in grid)
+    x: 320,             // initial coords
     y: 320
 }
 
@@ -140,6 +148,26 @@ document.addEventListener('keydown', e => {
         isPaused = !isPaused
     }
 })
+leftBtnEl.addEventListener('click', () => {
+        snake.dx = -grid
+        snake.dy = 0
+    })
+upBtnEl.addEventListener('click', () => {
+        snake.dy = -grid
+        snake.dx = 0
+    })
+rightBtnEl.addEventListener('click', () => {
+        snake.dx = grid
+        snake.dy = 0
+    })
+downBtnEl.addEventListener('click', () => {
+        snake.dy = grid
+        snake.dx = 0
+    })
+pauseBtnEl.addEventListener('click', () => {
+        isPaused = !isPaused
+    })
+
 
 /* Start game */
 requestAnimationFrame(loop)

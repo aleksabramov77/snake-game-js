@@ -3,28 +3,54 @@ body {
     height: 100%;
     margin: 0;
 }
+
 /*Задаём глобальные параметры*/
 body {
+    text-align: center;
+    /*display: flex;*/
     background: black;
-    display: flex;
-    align-items: center;
-    justify-content: center;
+    /*align-items: center;*/
+    /*justify-content: center;*/
 }
+
+body > div {
+    margin: 0 auto;
+    display: inline-block;
+    vertical-align: middle
+
+}
+
 /*Делаем границу вокруг игрового поля*/
 canvas {
-    margin-right: 200px;
+    margin-top: 25px;
     border: 1px solid white;
 }
 
 .gameInfo {
-    /*width: 250px;*/
-    /*margin-right: 100px;*/
+    text-align: start;
+
     color: white;
 }
+
 .gameInfoItem {
     display: grid;
     grid-template-columns: 100px 100px;
-    /*margin-inline: 50px;*/
-    margin-block: 20px;
     color: white;
+}
+
+.buttons {
+    width: 200px;
+}
+
+.buttons button {
+    display: inline-block;
+    margin: 10px;
+    width: 43px;
+    height: 40px;
+}
+
+button.pause {
+    margin-top: 50px;
+    width: 180px;
+    height: 30px;
 }
