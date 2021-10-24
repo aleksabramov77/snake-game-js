@@ -8,18 +8,18 @@ const rightBtnEl = document.getElementsByClassName('right')[0]    // create vari
 const pauseBtnEl = document.getElementsByClassName('pause')[0]    // create variable for 'game' element
 
 const context = canvasEl.getContext('2d')
-const field = { x: 25, y: 25 }
+const field = { x: 25, y: 25 }  // size of canvas in cells
 canvasEl.width = Math.floor((window.innerWidth - 2) / field.x) * field.x
 canvasEl.height = canvasEl.width = Math.min(400, canvasEl.width)
 // canvasEl.height = Math.min(400, canvasEl.width)
-const grid = Math.floor(canvasEl.width / field.x)               // size of cell in cells
+const grid = Math.floor(canvasEl.width / field.x)               // size of cell in pixels
 let framesCount = 0             // speed
 const initLength = 2            // initial length of snake
 let score = 0                   // score
 let bestScore = 0
 let isPaused = false
 let firstRender = true
-let stepIsOver = false
+let stepIsOver = false          // experimental feature for Preventing multiple button presses
 
 /* snake state */
 const snake = {
@@ -48,6 +48,7 @@ function loop () {
     requestAnimationFrame(loop)
     if (++framesCount < 10) return
     framesCount = 0
+    stepIsOver = true
 
     // game info render
     scoreEl.innerText = score
@@ -95,7 +96,6 @@ function loop () {
         context.fillRect(apple.x * grid + 1, apple.y * grid + 1, grid - 2, grid - 2)
 
         // draw the snake
-        stepIsOver = true
         snake.snakeCells.forEach((cell, index) => {
             context.fillStyle = ['#2DC64F', 'green'][Number(!!index)]        // highlight head with another color
             context.fillRect(cell.x * grid + 1, cell.y * grid + 1, grid - 2, grid - 2)
@@ -134,7 +134,7 @@ function loop () {
     }
 }
 
-// listen keydown
+// listen keydown and clicks
 document.addEventListener('keydown', handler)
 document.addEventListener('click', handler)
 
@@ -142,6 +142,8 @@ document.addEventListener('click', handler)
 requestAnimationFrame(loop)
 
 function handler (e) {
+    console.log('stepIsOver', stepIsOver)
+
     if (stepIsOver) {
         if (e.type === 'keydown' && e.code === 'ArrowLeft' || e.type === 'click' && e.target === leftBtnEl) {
             if (snake.dx === 0) {
@@ -165,6 +167,7 @@ function handler (e) {
             }
         } else if (e.type === 'keydown' && e.code === 'Space' || e.type === 'click' && e.target === pauseBtnEl) {
             isPaused = !isPaused
+            console.log('stepIsOver', stepIsOver, 'isPaused', isPaused)
         } else return
         stepIsOver = false
     }
